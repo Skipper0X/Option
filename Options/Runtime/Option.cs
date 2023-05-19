@@ -1,23 +1,24 @@
 using System;
 
-namespace Options.Runtime
+namespace GCore.Runtime.OptionsLib.Runtime
 {
 	/// <summary>
 	/// Type Option represents an optional value: every Option is either Some and contains a value, or None, and does not
 	/// </summary>
 	public readonly ref struct Option<TReturn>
 	{
-		private readonly TReturn _ok;
-		public readonly string Err;
+		public readonly string Error;
 		public readonly OptionStatus Status;
+
+		private readonly TReturn _ok;
 
 		/// <summary>
 		/// Private .ctor to restrict creation of this type only through factory methods for proper results.. 
 		/// </summary>
-		private Option(OptionStatus status, TReturn ok, string error)
+		internal Option(OptionStatus status, TReturn ok, string error)
 		{
 			_ok = ok;
-			Err = error;
+			Error = error;
 			Status = status;
 		}
 
@@ -51,22 +52,8 @@ namespace Options.Runtime
 		public TReturn UnWrapOrGetFrom(Func<TReturn> provider) => Status == OptionStatus.Success ? _ok : provider();
 
 		/// <summary>
-		/// <see cref="None"/> returns a <see cref="Option{TReturn}"/> with all none cases & no data...
+		/// implicit operator to unwrap value direct into the left side...
 		/// </summary>
-		public static Option<TReturn> None => new(OptionStatus.None, default, default);
-
-		/// <summary>
-		/// <see cref="Ok"/> provides the <see cref="Option{TReturn}"/> with Success & Given Ok Data...
-		/// </summary>
-		/// <param name="ok">Data to wrap in option</param>
-		/// <returns>InstanceOf <see cref="Option{TReturn}"/></returns>
-		public static Option<TReturn> Ok(TReturn ok) => new(OptionStatus.Success, ok, default);
-
-		/// <summary>
-		/// <see cref="Error"/> creates an instanceOf <see cref="Option{TReturn}"/> with the given error & error status 
-		/// </summary>
-		/// <param name="error">error to use for panics</param>
-		/// <returns>InstanceOf <see cref="Option{TReturn}"/></returns>
-		public static Option<TReturn> Error(string error) => new(OptionStatus.Error, default, error);
+		public static implicit operator TReturn(Option<TReturn> option) => option.UnWrap();
 	}
 }

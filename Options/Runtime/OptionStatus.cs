@@ -1,4 +1,4 @@
-﻿namespace Options.Runtime
+﻿namespace GCore.Runtime.OptionsLib.Runtime
 {
 	/// <summary>
 	/// <see cref="OptionStatus"/> defines the states of <see cref="Option{TReturn}"/>'s state for enum base checking...
